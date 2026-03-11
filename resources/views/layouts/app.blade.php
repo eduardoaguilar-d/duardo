@@ -7,12 +7,28 @@
 
     <title>{{ config('app.name', 'Duardo') }}</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
 </head>
-<body class="bg-gray-50 text-gray-900 antialiased">
+<body class="antialiased bg-gray-50" style="font-family: 'Inter', sans-serif;">
+    <div class="min-h-screen">
+        <livewire:layout.navigation />
 
-    {{ $slot }}
+        @if (isset($header))
+            <header class="bg-white border-b border-gray-200">
+                <div class="max-w-7xl mx-auto py-5 px-4 sm:px-6 lg:px-8">
+                    {{ $header }}
+                </div>
+            </header>
+        @endif
+
+        <main>
+            {{ $slot }}
+        </main>
+    </div>
 
     @livewireScripts
 </body>
