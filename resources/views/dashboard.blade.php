@@ -27,7 +27,7 @@
                 </div>
                 <h3 class="font-bold text-gray-800 mb-1">Mi cuenta</h3>
                 <p class="text-gray-500 text-sm">Gestiona tu perfil y configuración.</p>
-                <a href="{{ route('profile.edit') }}"
+                <a href="/profile" wire:navigate
                    class="inline-flex items-center mt-4 text-sm font-semibold text-indigo-600 hover:text-indigo-800 transition">
                     Ver perfil →
                 </a>
@@ -53,7 +53,7 @@
                 </div>
                 <h3 class="font-bold text-gray-800 mb-1">Seguridad</h3>
                 <p class="text-gray-500 text-sm">Actualiza contraseña y preferencias de seguridad.</p>
-                <a href="{{ route('profile.edit') }}"
+                <a href="/profile" wire:navigate
                    class="inline-flex items-center mt-4 text-sm font-semibold text-green-600 hover:text-green-800 transition">
                     Configurar →
                 </a>
