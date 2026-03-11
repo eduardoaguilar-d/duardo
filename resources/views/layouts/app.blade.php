@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" x-data x-bind:class="$store.theme.dark ? 'dark' : ''">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -13,15 +13,21 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
 
-    {{-- Dark mode init: evita FOUC (flash of unstyled content) --}}
     <script>
-        (function() {
+        // 1. Anti-FOUC: aplica .dark antes de que el navegador pinte
+        (function () {
             const saved = localStorage.getItem('theme');
             const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
             if (saved === 'dark' || (!saved && prefersDark)) {
                 document.documentElement.classList.add('dark');
             }
         })();
+
+        // 2. Función global para alternar el tema
+        function toggleTheme() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        }
     </script>
 </head>
 <body class="antialiased transition-colors duration-300 bg-gray-50 dark:bg-gray-950" style="font-family: 'Inter', sans-serif;">
@@ -42,19 +48,5 @@
     </div>
 
     @livewireScripts
-
-    {{-- Alpine store para dark mode con persistencia en localStorage --}}
-    <script>
-        document.addEventListener('alpine:init', () => {
-            Alpine.store('theme', {
-                dark: document.documentElement.classList.contains('dark'),
-                toggle() {
-                    this.dark = !this.dark;
-                    document.documentElement.classList.toggle('dark', this.dark);
-                    localStorage.setItem('theme', this.dark ? 'dark' : 'light');
-                }
-            });
-        });
-    </script>
 </body>
 </html>
