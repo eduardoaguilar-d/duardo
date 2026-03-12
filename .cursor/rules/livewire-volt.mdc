@@ -1,0 +1,14 @@
+---
+description: Convenciones Livewire 3 y Volt en Duardo
+globs: app/Livewire/**/*.php, resources/views/livewire/**/*.blade.php, routes/auth.php
+alwaysApply: false
+---
+
+# Livewire 3 y Volt
+
+- **Componentes clásicos**: clase en `app/Livewire/`, vista en `resources/views/livewire/<nombre>.blade.php`. Nombre del componente = path con puntos (ej. `layout.navigation`).
+- **Volt** (single-file): solo Blade en `resources/views/livewire/` con `use Livewire\Volt\Component;` y bloques `<?php ... ?>`. Usado en auth y formularios de perfil.
+- **En vistas**: `<livewire:nombre.componente />` o `@livewire('nombre.componente')`. Enlaces SPA: `wire:navigate`.
+- **Layout**: incluir `@livewireStyles` en `<head>` y `@livewireScripts` antes de `</body>` (el layout `app.blade.php` ya los tiene).
+- **Directivas**: `wire:model`, `wire:submit`, `wire:click`, `wire:navigate`. No duplicar Alpine para lógica que Livewire ya cubre.
+- **Tests**: `Volt::test('profile.update-password-form')`, `$response->assertSeeVolt('layout.navigation')`.

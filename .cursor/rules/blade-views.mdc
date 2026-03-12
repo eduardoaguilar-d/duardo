@@ -1,0 +1,14 @@
+---
+description: Convenciones Blade, componentes y dark mode en Duardo
+globs: **/*.blade.php
+alwaysApply: false
+---
+
+# Blade y vistas
+
+- **Assets**: `@vite(['resources/css/app.css', 'resources/js/app.js'])`. Layout principal: `resources/views/layouts/app.blade.php`.
+- **Livewire**: `<livewire:nombre.componente />`. Enlaces in-app: `wire:navigate`. En páginas con componentes Livewire, el layout ya incluye `@livewireStyles` y `@livewireScripts`.
+- **Dark mode**: La clase `.dark` va en `<html>`. Usar utilidades `dark:` en las clases (ej. `bg-white dark:bg-gray-900`). Toggle con la función global `toggleDarkMode()` definida en el layout.
+- **Anti-FOUC**: El script que aplica `.dark` según `localStorage`/`prefers-color-scheme` está en `<head>`; no moverlo a `defer` si se quiere evitar parpadeo.
+- **Alpine**: Usar `x-data`, `x-show`, `@click`, etc. donde haga falta. Para ocultar hasta hidratación: atributo `x-cloak` (estilo en `app.css`: `[x-cloak] { display: none !important; }`).
+- **Fuente**: Inter (en layout y en `@theme` de app.css).

@@ -1,0 +1,14 @@
+---
+description: Convenciones PHP y Laravel en el proyecto Duardo
+globs: **/*.php
+alwaysApply: false
+---
+
+# PHP y Laravel
+
+- **PHP**: ^8.2. Usar sintaxis moderna (tipado, atributos cuando aplique).
+- **Rutas**: `routes/web.php` (páginas), `routes/auth.php` (auth con Volt: `Volt::route(...)`).
+- **Componentes Livewire clásicos**: namespace `App\Livewire`, clase en `app/Livewire/`, vista en `resources/views/livewire/<nombre>.blade.php`.
+- **Base de datos por defecto**: SQLite. No asumir MySQL sin revisar `.env`.
+- **Tests**: `tests/Feature/`. Para componentes Volt usar `Volt::test('livewire.nombre.componente')` y `$response->assertSeeVolt('...')`.
+- Mantener dependencias en las versiones de `composer.json` (Laravel 12, Livewire ^3.6.4, Volt ^1.7.0).

@@ -1,0 +1,12 @@
+---
+description: Contexto global del proyecto Duardo (stack y convenciones)
+alwaysApply: true
+---
+
+# Proyecto Duardo – Contexto global
+
+- **Stack**: Laravel 12, PHP ^8.2, Livewire 3, Volt, Alpine (vía Livewire), Tailwind CSS v4, Vite 7.
+- **No mezclar Tailwind v3 con v4**: el proyecto usa `@import 'tailwindcss'` y el plugin `@tailwindcss/vite`; requiere `tailwindcss@4` en package.json.
+- **No inicializar Alpine** en `resources/js/app.js`; Livewire 3 ya lo incluye. Plugins solo con `document.addEventListener('alpine:init', ...)`.
+- **Dark mode**: clase `.dark` en `<html>`, persistencia en `localStorage.theme`, función global `toggleDarkMode()` en el layout.
+- Para detalles de versiones, rutas, Livewire/Volt, Tailwind v4 y errores frecuentes, consultar **.cursor/skills/duardo-project/SKILL.md**.

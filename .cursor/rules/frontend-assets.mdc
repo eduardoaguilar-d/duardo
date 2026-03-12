@@ -1,0 +1,13 @@
+---
+description: Tailwind v4, Vite y Alpine en Duardo (CSS/JS/config)
+globs: resources/css/**/*.css, resources/js/**/*.js, vite.config.js, postcss.config.js, tailwind.config.js, package.json
+alwaysApply: false
+---
+
+# Frontend: Tailwind v4, Vite, Alpine
+
+- **Tailwind v4**: En `resources/css/app.css` usar `@import 'tailwindcss';` (no `@tailwind base/components/utilities`). Contenido con `@source`, tema con `@theme`, dark con `@custom-variant dark (&:where(.dark, .dark *));`.
+- **Vite**: `vite.config.js` debe incluir `tailwindcss()` de `@tailwindcss/vite`. En `postcss.config.js` no incluir el plugin `tailwindcss` (solo autoprefixer u otros).
+- **package.json**: `tailwindcss@4` (no v3). No quitar `@tailwindcss/vite`.
+- **Alpine**: No importar ni llamar `Alpine.start()` en `app.js`; Livewire lo gestiona. Plugins: `document.addEventListener('alpine:init', () => { Alpine.plugin(...); });`.
+- Si aparece "Can't resolve 'tailwindcss'" → instalar `tailwindcss@4`. Si aparece "Unknown word use strict" en PostCSS → quitar `tailwindcss` de postcss.config.js y usar solo el plugin de Vite.
