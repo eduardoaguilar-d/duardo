@@ -53,14 +53,25 @@
             if (moonIcon) moonIcon.style.display = isDark ? 'none' : 'block';
         }
 
-        // Sincroniza íconos al cargar
-        document.addEventListener('DOMContentLoaded', function () {
+        function applyThemeFromStorage() {
+            var saved = localStorage.getItem('theme');
+            var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (saved === 'dark' || (!saved && prefersDark)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
             var isDark = document.documentElement.classList.contains('dark');
             var sunIcon = document.getElementById('icon-sun');
             var moonIcon = document.getElementById('icon-moon');
             if (sunIcon) sunIcon.style.display = isDark ? 'block' : 'none';
             if (moonIcon) moonIcon.style.display = isDark ? 'none' : 'block';
-        });
+        }
+
+        // Sincroniza íconos al cargar
+        document.addEventListener('DOMContentLoaded', applyThemeFromStorage);
+        // Tras wire:navigate el servidor devuelve HTML sin .dark; reaplicar tema desde localStorage
+        document.addEventListener('livewire:navigated', applyThemeFromStorage);
     </script>
 </body>
 </html>

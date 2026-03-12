@@ -1,5 +1,8 @@
-<x-app-layout>
-    <div class="py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+<x-app-shell>
+    <x-slot name="header">
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
+    </x-slot>
+    <div class="py-4 max-w-7xl mx-auto">
 
         {{-- Bienvenida --}}
         <div class="mb-8 rounded-2xl p-8 text-white"
@@ -61,4 +64,4 @@
         </div>
 
     </div>
-</x-app-layout>
+</x-app-shell>

@@ -94,6 +94,23 @@ document.addEventListener('alpine:init', () => {
 
 ---
 
+## Application shell (app-shell)
+
+Layout con barra superior fija, sidebar colapsable (drawer en móvil) y área principal. Uso: `<x-app-shell>` con slots opcionales `header`, `sidebar`, `navbarActions`.
+
+- **Layout**: `resources/views/layouts/app-shell.blade.php`. Componente: `App\View\Components\AppShell` → `<x-app-shell>`.
+- **Componentes reutilizables** en `resources/views/components/app/`:
+  - `navbar`: barra superior (logo, toggle drawer, dark mode, slot para acciones). Slots: `brand`, `search`, slot por defecto = acciones derecha.
+  - `sidebar`: drawer/sidebar (Alpine `sidebarOpen`). Slots: contenido del menú, `search` (móvil), `footer`, `bottomBar`.
+  - `sidebar-item`: enlace con `href`, `icon` (HTML), `badge` opcional. Uso: `<x-app.sidebar-item :href="route('dashboard')" icon="<svg>…</svg>">Dashboard</x-app.sidebar-item>`.
+  - `sidebar-group`: grupo colapsable con `label` e `icon` opcional. Hijos: `<x-app.sidebar-subitem :href="...">Texto</x-app.sidebar-subitem>`.
+  - `sidebar-subitem`: enlace indentado dentro de un grupo.
+  - `dropdown-menu`: menú desplegable Alpine. Props: `title`, `align`. Slots: `trigger`, contenido.
+- Drawer y dropdowns usan Alpine.js (sin Flowbite). Estado del drawer: `sidebarOpen` en el root del layout.
+- Dashboard y perfil ya usan `<x-app-shell>`.
+
+---
+
 ## Tests
 
 - Tests de características en `tests/Feature/`.
