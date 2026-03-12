@@ -2,7 +2,7 @@
     <x-slot name="header">
         <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
     </x-slot>
-    <div class="py-4 max-w-7xl mx-auto">
+    <div class="py-4 max-w-7xl mx-auto" x-data="{ openWhatsAppModal: false }" @close-whatsapp-modal.window="openWhatsAppModal = false">
 
         {{-- Bienvenida --}}
         <div class="mb-8 rounded-2xl p-8 text-white"
@@ -17,6 +17,62 @@
                     <p class="text-purple-300 text-xs">Miembro desde</p>
                     <p class="text-white font-semibold">{{ Auth::user()->created_at->format('d M Y') }}</p>
                 </div>
+            </div>
+        </div>
+
+        @if (session('status'))
+            <div class="mb-6 rounded-xl bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-200 px-4 py-3 text-sm">
+                {{ session('status') }}
+            </div>
+        @endif
+
+        {{-- Paso 1: WhatsApp --}}
+        @php
+            $whatsappConnected = Auth::user()->clients()->whereHas('whatsappConnection')->exists();
+        @endphp
+        <div class="mb-8 p-6 rounded-2xl border-2 {{ $whatsappConnected ? 'bg-green-50 dark:bg-green-950/30 border-green-200 dark:border-green-800' : 'bg-amber-50 dark:bg-amber-950/30 border-amber-200 dark:border-amber-800' }}">
+            <div class="flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center gap-4">
+                    <span class="text-3xl">{{ $whatsappConnected ? '✅' : '1️⃣' }}</span>
+                    <div>
+                        <h2 class="text-lg font-bold text-gray-900 dark:text-white">Conectar WhatsApp (Meta Cloud API)</h2>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mt-0.5">
+                            {{ $whatsappConnected ? 'Cuenta conectada. Puedes gestionar la conexión o añadir otra.' : 'Primer paso: vincula tu número de WhatsApp Business con las credenciales de Meta.' }}
+                        </p>
+                    </div>
+                </div>
+                <button type="button"
+                        @click="openWhatsAppModal = true"
+                        class="inline-flex items-center px-4 py-2.5 rounded-xl font-medium text-sm {{ $whatsappConnected ? 'bg-green-600 hover:bg-green-700 text-white' : 'bg-amber-500 hover:bg-amber-600 text-white' }}">
+                    {{ $whatsappConnected ? 'Gestionar conexión' : 'Conectar cuenta' }}
+                </button>
+            </div>
+        </div>
+
+        {{-- Modal: Conectar WhatsApp (Facebook / Meta) --}}
+        <div x-show="openWhatsAppModal"
+             x-cloak
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="fixed inset-0 z-50 flex items-center justify-center p-4"
+             style="display: none;">
+            <div class="absolute inset-0 bg-gray-900/60 dark:bg-gray-950/70" @click="openWhatsAppModal = false" aria-hidden="true"></div>
+            <div class="relative w-full max-w-lg rounded-2xl bg-white dark:bg-gray-900 shadow-xl border border-gray-200 dark:border-gray-700 p-6"
+                 @click.stop>
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-white">Conectar WhatsApp (Meta)</h3>
+                    <button type="button"
+                            @click="openWhatsAppModal = false"
+                            class="p-2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+                            aria-label="Cerrar">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+                    </button>
+                </div>
+                <livewire:connect-whatsapp-form />
             </div>
         </div>
 

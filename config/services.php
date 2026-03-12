@@ -35,4 +35,17 @@ return [
         ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | WhatsApp Cloud API (Meta)
+    |--------------------------------------------------------------------------
+    | App Secret: para verificar firma X-Hub-Signature-256 en el webhook.
+    | Verify Token: valor que Meta envía en GET; debe coincidir para devolver hub.challenge.
+    */
+    'meta' => [
+        'app_id' => env('META_APP_ID'),
+        'app_secret' => env('META_APP_SECRET'),
+        'webhook_verify_token' => env('META_WEBHOOK_VERIFY_TOKEN'),
+    ],
+
 ];

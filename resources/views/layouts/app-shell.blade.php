@@ -22,6 +22,7 @@
     </script>
 </head>
 <body class="antialiased bg-gray-50 dark:bg-gray-900 transition-colors duration-300" style="font-family: 'Inter', sans-serif;">
+    @php $drawerId = $drawerId ?? 'drawer-navigation'; @endphp
     <div class="min-h-screen" x-data="{ sidebarOpen: false }">
         <x-app.navbar :drawer-id="$drawerId">
             @isset($navbarActions)
