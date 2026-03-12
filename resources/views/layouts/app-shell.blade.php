@@ -99,6 +99,114 @@
     </div>
 
     @livewireScripts
+    @auth
+    @php
+        $metaFbAppId = config('services.meta.app_id');
+        $metaFbConfigId = (string) (config('services.meta.embedded_signup_configuration_id') ?? '');
+    @endphp
+    @if($metaFbAppId && $metaFbConfigId !== '')
+    {{-- Facebook SDK para Embedded Signup (Conectar con Meta) --}}
+    <script>
+        window.__metaFb = {
+            appId: @json($metaFbAppId),
+            configId: @json($metaFbConfigId),
+            version: 'v21.0'
+        };
+    </script>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
+    <script>
+        window.fbAsyncInit = function() {
+            FB.init({
+                appId: window.__metaFb.appId,
+                cookie: true,
+                xfbml: true,
+                version: window.__metaFb.version
+            });
+            FB.AppEvents.logPageView();
+        };
+        document.addEventListener('alpine:init', function() {
+            Alpine.data('connectMetaSdk', function() {
+                return {
+                    loading: false,
+                    error: '',
+                    sessionData: null,
+                    messageListener: null,
+                    launchConnect: function() {
+                        var self = this;
+                        if (typeof FB === 'undefined') {
+                            this.error = 'El SDK de Facebook no ha cargado. Recarga la página.';
+                            return;
+                        }
+                        var configId = (window.__metaFb && window.__metaFb.configId) ? String(window.__metaFb.configId) : '';
+                        if (!configId) {
+                            this.error = 'Falta config_id. Ejecuta: php artisan config:clear y revisa META_EMBEDDED_SIGNUP_CONFIGURATION_ID en .env';
+                            return;
+                        }
+                        this.loading = true;
+                        this.error = '';
+                        this.sessionData = null;
+                        var cb = this.sendCodeToBackend.bind(this);
+                        this.messageListener = function(event) {
+                            if (event.origin !== 'https://www.facebook.com' && event.origin !== 'https://facebook.com') return;
+                            var d = event.data;
+                            if (d && (d.waba_id || d.phone_number_id)) {
+                                self.sessionData = { waba_id: d.waba_id || '', phone_number_id: d.phone_number_id || '' };
+                            }
+                        };
+                        window.addEventListener('message', this.messageListener);
+                        FB.login(function(response) {
+                            window.removeEventListener('message', self.messageListener);
+                            if (response.authResponse && response.authResponse.code) {
+                                cb(response.authResponse.code);
+                            } else if (response.status === 'connected' && response.authResponse && response.authResponse.accessToken) {
+                                self.error = 'Usa response_type: code en la configuración de Meta. No se recibió code.';
+                                self.loading = false;
+                            } else {
+                                self.error = response.error_message || 'No se completó el inicio de sesión.';
+                                self.loading = false;
+                            }
+                        }, {
+                            config_id: configId,
+                            response_type: 'code',
+                            override_default_response_type: true
+                        });
+                    },
+                    sendCodeToBackend: function(code) {
+                        var payload = {
+                            code: code,
+                            waba_id: this.sessionData ? this.sessionData.waba_id : null,
+                            phone_number_id: this.sessionData ? this.sessionData.phone_number_id : null
+                        };
+                        fetch('{{ route("whatsapp.oauth.embeddedCallback") }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                                'Accept': 'application/json'
+                            },
+                            body: JSON.stringify(payload)
+                        }).then(function(r) { return r.json().then(function(j) { return { ok: r.ok, json: j }; }); })
+                        .then(function(result) {
+                            if (result.ok && result.json.success) {
+                                window.dispatchEvent(new CustomEvent('close-whatsapp-modal'));
+                                window.location.reload();
+                            } else {
+                                this.error = result.json.message || 'Error al conectar.';
+                            }
+                        }.bind(this))
+                        .catch(function() {
+                            this.error = 'Error de red al enviar el código.';
+                        }.bind(this))
+                        .finally(function() {
+                            this.loading = false;
+                        }.bind(this));
+                    }
+                };
+            });
+        });
+    </script>
+    @endif
+    @endauth
     <script>
         function toggleDarkMode() {
             var isDark = document.documentElement.classList.toggle('dark');

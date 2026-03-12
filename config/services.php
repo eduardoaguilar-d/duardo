@@ -46,6 +46,9 @@ return [
         'app_id' => env('META_APP_ID'),
         'app_secret' => env('META_APP_SECRET'),
         'webhook_verify_token' => env('META_WEBHOOK_VERIFY_TOKEN'),
+        'oauth_redirect_uri' => env('META_OAUTH_REDIRECT_URI'),
+        // Opcional: ID de "Registro insertado de WhatsApp" (Embedded Signup) en Meta for Developers
+        'embedded_signup_configuration_id' => env('META_EMBEDDED_SIGNUP_CONFIGURATION_ID'),
     ],
 
 ];
